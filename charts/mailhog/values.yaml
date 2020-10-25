@@ -25,6 +25,9 @@ securityContext:
   fsGroup: 1000
   runAsNonRoot: true
 
+containerSecurityContext:
+  privileged: false
+
 ingress:
   enabled: false
   annotations: {}

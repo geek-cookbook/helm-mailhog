@@ -88,6 +88,10 @@ spec:
         {{- toYaml . | nindent 8 }}
     {{- end }}
     {{- if .Values.auth.enabled }}
+      {{- with .Values.containerSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 12 }}
+      {{- end }}    
       volumes:
         - name: authdir
           secret:
