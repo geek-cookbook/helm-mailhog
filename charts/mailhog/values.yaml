@@ -49,6 +49,8 @@ podAnnotations: {}
 
 podLabels: {}
 
+deploymentLabels: {}
+
 extraEnv: []
 
 resources: {}
