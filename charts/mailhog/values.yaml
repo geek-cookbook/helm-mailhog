@@ -45,11 +45,13 @@ auth:
   fileName: auth.txt
   fileContents: ""
 
+deploymentAnnotations: {}
+
 podAnnotations: {}
 
-podLabels: {}
-
 deploymentLabels: {}
+
+podLabels: {}
 
 extraEnv: []
 
