@@ -75,6 +75,10 @@ spec:
           {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}                
     {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -87,11 +91,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- if .Values.auth.enabled }}
-      {{- with .Values.containerSecurityContext }}
-      securityContext:
-        {{- toYaml . | nindent 12 }}
-      {{- end }}    
+    {{- if .Values.auth.enabled }}      
       volumes:
         - name: authdir
           secret:
