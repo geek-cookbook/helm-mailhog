@@ -26,8 +26,9 @@ securityContext:
   runAsNonRoot: true
 
 containerSecurityContext:
+  readOnlyRootFilesystem: true
   privileged: false
-
+  
 ingress:
   enabled: false
   annotations: {}
@@ -47,6 +48,22 @@ auth:
   existingSecret: ""
   fileName: auth.txt
   fileContents: ""
+
+# Enable this to configure an outgoing SMTP server for released emails
+outgoingSMTP:
+  enabled: false
+  fileContents: |
+    {
+        "server name": {
+            "name": "server name",
+            "host": "...",
+            "port": "587",
+            "email": "...",
+            "username": "...",
+            "password": "...",
+            "mechanism": "PLAIN"
+        }
+    }
 
 deploymentAnnotations: {}
 

@@ -1,0 +1,13 @@
+{{- if .Values.outgoingSMTP.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ include "mailhog.name" . }}
+    helm.sh/chart: {{ include "mailhog.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  name: {{ template "mailhog.outgoingSMTPFileConfigMap" . }}
+data:
+  outgoing-smtp.json: {{ .Values.outgoingSMTP.fileContents | b64enc }}
+{{- end -}}

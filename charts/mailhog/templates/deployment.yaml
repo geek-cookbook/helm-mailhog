@@ -49,6 +49,10 @@ spec:
             - name: MH_AUTH_FILE
               value: /authdir/{{ .Values.auth.fileName }}
           {{- end }}
+          {{- if .Values.outgoingSMTP.enabled -}}          
+            - name: MH_OUTGOING_SMTP
+              value: /outgoingsmtpdir/outgoing-smtp.json
+          {{- end }}
           {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -59,18 +63,18 @@ spec:
             - name: tcp-smtp
               containerPort: 1025
               protocol: TCP
-          livenessProbe:
-            tcpSocket:
-              port: tcp-smtp
-            initialDelaySeconds: 10
-            timeoutSeconds: 1
           readinessProbe:
             tcpSocket:
               port: tcp-smtp
-          {{- if .Values.auth.enabled }}
           volumeMounts:
+          {{- if .Values.auth.enabled }}          
             - name: authdir
               mountPath: /authdir
+              readOnly: true
+          {{- end }}
+          {{- if .Values.outgoingSMTP.enabled }}          
+            - name: outgoingsmtpdir
+              mountPath: /outgoingsmtpdir
               readOnly: true
           {{- end }}
           resources:
@@ -91,9 +95,14 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
+      volumes:    
     {{- if .Values.auth.enabled }}      
-      volumes:
         - name: authdir
           secret:
             secretName: {{ template "mailhog.authFileSecret" . }}
     {{- end }}
+    {{- if .Values.outgoingSMTP.enabled }}      
+        - name: outgoingsmtpdir
+          configMap:
+            name: {{ template "mailhog.outgoingSMTPFileConfigMap" . }}
+    {{- end }}    
