@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - master
+      - main
     paths:
       - 'charts/**' 
       - '.github/**'     
-      - 'deploy/manifests/**'    
+      - 'deploy/manifests/**'   
+  workflow_dispatch: 
       
 jobs:
   build:
