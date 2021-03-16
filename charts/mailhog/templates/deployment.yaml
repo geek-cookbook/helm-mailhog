@@ -43,9 +43,7 @@ spec:
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           env:
             - name: MH_HOSTNAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
+              value: {{ .Values.hostname }}
           {{- if .Values.auth.enabled }}
             - name: MH_AUTH_FILE
               value: /authdir/{{ .Values.auth.fileName }}
