@@ -92,3 +92,7 @@ affinity: {}
 nodeSelector: {}
 
 tolerations: []
+
+serviceAccount:
+  create: true
+  name: mailhog
