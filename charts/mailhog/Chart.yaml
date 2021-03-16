@@ -2,7 +2,7 @@ apiVersion: v1
 description: An e-mail testing tool for developers
 name: mailhog
 appVersion: v1.0.1
-version: 3.2.4-pre2
+version: 3.2.4-pre3
 keywords:
   - mailhog
   - mail

@@ -9,5 +9,6 @@ metadata:
     app.kubernetes.io/managed-by: {{ .Release.Service }}
   name: {{ template "mailhog.outgoingSMTPFileConfigMap" . }}
 data:
-  outgoing-smtp.json: {{ .Values.outgoingSMTP.fileContents | b64enc }}
+  outgoing-smtp.json: 
+{{ toJson .Values.outgoingSMTP.fileContents | indent 4 }}
 {{- end -}}
