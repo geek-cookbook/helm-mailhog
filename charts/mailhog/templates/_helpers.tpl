@@ -41,3 +41,25 @@ Create the name for the auth secret.
         {{- template "mailhog.fullname" . -}}-auth
     {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name for the outgoingSMTP configmap.
+*/}}
+{{- define "mailhog.outgoingSMTPFileConfigMap" -}}
+    {{- if .Values.outgoingSMTP.existingSecret -}}
+        {{- .Values.outgoingSMTP.existingSecret -}}
+    {{- else -}}
+        {{- template "mailhog.fullname" . -}}-outgoing-smtp
+    {{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "mailhog.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "mailhog.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "mailhog" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}
