@@ -2,6 +2,8 @@ image:
   repository: mailhog/mailhog
   tag: ""
   pullPolicy: IfNotPresent
+  # Optionally, use the image sha instead of tag. Enter the entire 'sha256@...' string below
+  sha: ""
 
 nameOverride: ""
 fullnameOverride: ""
