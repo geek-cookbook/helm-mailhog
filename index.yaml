@@ -3,6 +3,29 @@ entries:
   mailhog:
   - apiVersion: v1
     appVersion: v1.0.1
+    created: "2022-04-01T01:12:01.176708124Z"
+    description: An e-mail testing tool for developers
+    digest: de16d6f002a6fccda837f8897ecb75aef69171cf5d0719d414e7a6daa9e458b4
+    home: http://iankent.uk/project/mailhog/
+    icon: https://raw.githubusercontent.com/mailhog/MailHog-UI/master/assets/images/hog.png
+    keywords:
+    - mailhog
+    - mail
+    - smtp
+    - email
+    - e-mail
+    - testing
+    maintainers:
+    - email: unguiculus@gmail.com
+      name: unguiculus
+    name: mailhog
+    sources:
+    - https://github.com/mailhog/MailHog
+    urls:
+    - https://github.com/geek-cookbook/helm-mailhog/releases/download/mailhog-3.2.7/mailhog-3.2.7.tgz
+    version: 3.2.7
+  - apiVersion: v1
+    appVersion: v1.0.1
     created: "2022-04-01T01:09:06.457932138Z"
     description: An e-mail testing tool for developers
     digest: ea350b40a0797a924bac3b4939f680ac6ca4870e05aa7b11f20ce66f3b36abbd
