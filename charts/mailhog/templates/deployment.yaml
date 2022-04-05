@@ -7,6 +7,13 @@ metadata:
     helm.sh/chart: {{ include "mailhog.chart" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
+    {{- with .Values.deploymentLabels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}    
+  {{- with .Values.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}    
 spec:
   selector:
     matchLabels:
@@ -29,18 +36,25 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      serviceAccountName: {{ template "mailhog.serviceAccountName" . }}
       containers:
         - name: {{ template "mailhog.name" . }}
+          {{- if .Values.image.sha }}
+          image: "{{ .Values.image.repository }}@sha256:{{ .Values.image.sha }}"
+          {{- else }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          {{- end }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           env:
             - name: MH_HOSTNAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
+              value: {{ .Values.hostname }}
           {{- if .Values.auth.enabled }}
             - name: MH_AUTH_FILE
               value: /authdir/{{ .Values.auth.fileName }}
+          {{- end }}
+          {{- if .Values.outgoingSMTP.enabled }}          
+            - name: MH_OUTGOING_SMTP
+              value: /outgoingsmtpdir/outgoing-smtp.json
           {{- end }}
           {{- with .Values.extraEnv }}
             {{- toYaml . | nindent 12 }}
@@ -52,22 +66,26 @@ spec:
             - name: tcp-smtp
               containerPort: 1025
               protocol: TCP
-          livenessProbe:
-            tcpSocket:
-              port: tcp-smtp
-            initialDelaySeconds: 10
-            timeoutSeconds: 1
           readinessProbe:
             tcpSocket:
               port: tcp-smtp
-          {{- if .Values.auth.enabled }}
           volumeMounts:
+          {{- if .Values.auth.enabled }}          
             - name: authdir
               mountPath: /authdir
               readOnly: true
           {{- end }}
+          {{- if .Values.outgoingSMTP.enabled }}          
+            - name: outgoingsmtpdir
+              mountPath: /outgoingsmtpdir
+              readOnly: true
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}                
     {{- with .Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
@@ -80,9 +98,14 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-    {{- if .Values.auth.enabled }}
-      volumes:
+      volumes:    
+    {{- if .Values.auth.enabled }}      
         - name: authdir
           secret:
             secretName: {{ template "mailhog.authFileSecret" . }}
     {{- end }}
+    {{- if .Values.outgoingSMTP.enabled }}      
+        - name: outgoingsmtpdir
+          configMap:
+            name: {{ template "mailhog.outgoingSMTPFileConfigMap" . }}
+    {{- end }}    

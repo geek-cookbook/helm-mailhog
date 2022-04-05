@@ -2,6 +2,8 @@ image:
   repository: mailhog/mailhog
   tag: ""
   pullPolicy: IfNotPresent
+  # Optionally, use the image sha instead of tag. Enter the entire 'sha256@...' string below
+  sha: ""
 
 nameOverride: ""
 fullnameOverride: ""
@@ -25,6 +27,10 @@ securityContext:
   fsGroup: 1000
   runAsNonRoot: true
 
+containerSecurityContext:
+  readOnlyRootFilesystem: true
+  privileged: false
+  
 ingress:
   enabled: false
   annotations: {}
@@ -45,7 +51,30 @@ auth:
   fileName: auth.txt
   fileContents: ""
 
+# The hostname value below will be used in the FROM value in any released emails, so it needs to legitimately exist for proper email delivery
+hostname: yourdomain.com
+
+# Enable this to configure an outgoing SMTP server for released emails
+outgoingSMTP:
+  enabled: false
+  fileContents: |
+    {
+        "server name": {
+            "name": "server name",
+            "host": "...",
+            "port": "587",
+            "email": "...",
+            "username": "...",
+            "password": "...",
+            "mechanism": "PLAIN"
+        }
+    }
+
+deploymentAnnotations: {}
+
 podAnnotations: {}
+
+deploymentLabels: {}
 
 podLabels: {}
 
@@ -68,3 +97,7 @@ affinity: {}
 nodeSelector: {}
 
 tolerations: []
+
+serviceAccount:
+  create: true
+  name: mailhog
